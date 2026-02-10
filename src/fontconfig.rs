@@ -39,7 +39,7 @@ pub mod system_fonts {
     use std::ptr;
     use std::slice;
 
-    use std::sync::{Once, ONCE_INIT};
+    use std::sync::Once;
 
     static FC_FAMILY: &'static [u8] = b"family\0";
     static FC_FILE: &'static [u8] = b"file\0";
@@ -76,7 +76,7 @@ pub mod system_fonts {
     static FC_MONO: c_int = 100;
     // 	static FC_CHARCELL: c_int = 110;
 
-    static INIT_FONTCONFIG: Once = ONCE_INIT;
+    static INIT_FONTCONFIG: Once = Once::new();
     static mut CONFIG: *mut FcConfig = 0 as *mut FcConfig;
 
     fn init() -> *mut FcConfig {
