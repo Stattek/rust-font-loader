@@ -9,6 +9,7 @@ homepage = "https://github.com/matprec/rust-font-loader"
 repository = "https://github.com/matprec/rust-font-loader"
 keywords = ["font", "loading","loader", "wingdi", "fontconfig"]
 description = "A font loading utility written in and for Rust."
+edition = "2024"
 
 [dependencies]
 libc = "0.2.15"
