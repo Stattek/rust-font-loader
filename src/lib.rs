@@ -66,7 +66,6 @@
 //! }
 //! ```
 
-
 extern crate libc;
 
 #[cfg(target_os = "windows")]
@@ -78,9 +77,9 @@ mod win32;
 pub use win32::*;
 
 #[cfg(target_os = "macos")]
-extern crate core_text;
-#[cfg(target_os = "macos")]
 extern crate core_foundation;
+#[cfg(target_os = "macos")]
+extern crate core_text;
 #[cfg(target_os = "macos")]
 mod macos;
 #[cfg(target_os = "macos")]

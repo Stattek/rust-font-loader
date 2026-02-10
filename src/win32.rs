@@ -18,19 +18,19 @@
 
 /// Font loading utilities for installed system fonts
 pub mod system_fonts {
-    use winapi::um::wingdi;
-    use winapi::um::wingdi::TEXTMETRICW;
     use winapi::ctypes::{c_int, c_void};
-    use winapi::um::winnt::{PVOID};
-    use winapi::um::wingdi::FIXED_PITCH;
-    use winapi::um::wingdi::{ENUMLOGFONTEXW, LOGFONTW, OUT_TT_ONLY_PRECIS};
-    use winapi::um::wingdi::FONTENUMPROCW;
     use winapi::shared::minwindef::{DWORD, LPARAM};
+    use winapi::um::wingdi;
+    use winapi::um::wingdi::FIXED_PITCH;
+    use winapi::um::wingdi::FONTENUMPROCW;
+    use winapi::um::wingdi::TEXTMETRICW;
+    use winapi::um::wingdi::{ENUMLOGFONTEXW, LOGFONTW, OUT_TT_ONLY_PRECIS};
+    use winapi::um::winnt::PVOID;
 
-    use std::ptr;
-    use std::mem;
     use std::ffi::{OsStr, OsString};
+    use std::mem;
     use std::os::windows::ffi::{OsStrExt, OsStringExt};
+    use std::ptr;
 
     /// The platform specific font properties
     pub type FontProperty = LOGFONTW;
@@ -148,7 +148,6 @@ pub mod system_fonts {
     /// Query the names of specifc fonts installed in the system
     /// Note that only truetype fonts are supported
     pub fn query_specific(property: &mut FontProperty) -> Vec<String> {
-
         let mut fonts = Vec::new();
         let mut f: FONTENUMPROCW = Some(callback_ttf);
         unsafe {
@@ -167,12 +166,12 @@ pub mod system_fonts {
     }
 
     #[allow(non_snake_case)]
-    unsafe extern "system" fn callback_ttf(lpelfe: *const LOGFONTW,
-                                           _: *const TEXTMETRICW,
-                                           fonttype: DWORD,
-                                           lparam: LPARAM)
-                                           -> c_int {
-
+    unsafe extern "system" fn callback_ttf(
+        lpelfe: *const LOGFONTW,
+        _: *const TEXTMETRICW,
+        fonttype: DWORD,
+        lparam: LPARAM,
+    ) -> c_int {
         if fonttype != 4 {
             return 1;
         }
@@ -183,11 +182,12 @@ pub mod system_fonts {
     }
 
     #[allow(non_snake_case)]
-    unsafe extern "system" fn callback_monospace(lpelfe: *const LOGFONTW,
-                                                 _: *const TEXTMETRICW,
-                                                 fonttype: DWORD,
-                                                 lparam: LPARAM)
-                                                 -> c_int {
+    unsafe extern "system" fn callback_monospace(
+        lpelfe: *const LOGFONTW,
+        _: *const TEXTMETRICW,
+        fonttype: DWORD,
+        lparam: LPARAM,
+    ) -> c_int {
         if fonttype != 4 {
             return 1;
         }
@@ -217,12 +217,12 @@ pub mod system_fonts {
     }
 
     #[allow(non_snake_case)]
-    unsafe extern "system" fn callback_native(lpelfe: *const LOGFONTW,
-                                              _: *const TEXTMETRICW,
-                                              fonttype: DWORD,
-                                              lparam: LPARAM)
-                                              -> c_int {
-
+    unsafe extern "system" fn callback_native(
+        lpelfe: *const LOGFONTW,
+        _: *const TEXTMETRICW,
+        fonttype: DWORD,
+        lparam: LPARAM,
+    ) -> c_int {
         if fonttype != 4 {
             return 1;
         }
@@ -231,5 +231,4 @@ pub mod system_fonts {
 
         0
     }
-
 }

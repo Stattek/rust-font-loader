@@ -18,32 +18,35 @@
 
 /// Font loading utilities for installed system fonts
 pub mod system_fonts {
-    use core_text::font_descriptor::*;
-    use core_text::font_descriptor;
+    use core_foundation::array::CFArray;
+    use core_foundation::base::{CFType, TCFType};
+    use core_foundation::dictionary::CFDictionary;
+    use core_foundation::number::CFNumber;
+    use core_foundation::string::CFString;
+    use core_foundation::url::CFURL;
     use core_text;
+    use core_text::font_descriptor;
+    use core_text::font_descriptor::*;
+    use libc::c_int;
     use std::fs::File;
+    use std::io::Read;
     use std::mem;
     use std::ptr;
-    use core_foundation::string::CFString;
-    use core_foundation::number::CFNumber;
-    use core_foundation::array::CFArray;
-    use core_foundation::dictionary::CFDictionary;
-    use core_foundation::base::{CFType, TCFType};
-    use core_foundation::url::CFURL;
-    use libc::c_int;
-    use std::io::Read;
     /// The platform specific font properties
     pub type FontProperty = CTFontDescriptor;
 
     /// Builder for FontProperty
     pub struct FontPropertyBuilder {
         symbolic_traits: CTFontSymbolicTraits,
-        family: String
+        family: String,
     }
 
     impl FontPropertyBuilder {
         pub fn new() -> FontPropertyBuilder {
-            FontPropertyBuilder{ symbolic_traits: 0, family: String::new()}
+            FontPropertyBuilder {
+                symbolic_traits: 0,
+                family: String::new(),
+            }
         }
 
         pub fn italic(mut self) -> FontPropertyBuilder {
@@ -71,11 +74,17 @@ pub mod system_fonts {
         }
 
         pub fn build(self) -> FontProperty {
-            let family_attr: CFString = unsafe { TCFType::wrap_under_get_rule(kCTFontFamilyNameAttribute) };
+            let family_attr: CFString =
+                unsafe { TCFType::wrap_under_get_rule(kCTFontFamilyNameAttribute) };
             let family_name: CFString = self.family.parse().unwrap();
-            let traits_attr: CFString = unsafe { TCFType::wrap_under_get_rule(kCTFontTraitsAttribute) };
-            let symbolic_traits_attr: CFString = unsafe { TCFType::wrap_under_get_rule(kCTFontSymbolicTrait) };
-            let traits = CFDictionary::from_CFType_pairs(&[(symbolic_traits_attr.as_CFType(), CFNumber::from(self.symbolic_traits as i32).as_CFType())]);
+            let traits_attr: CFString =
+                unsafe { TCFType::wrap_under_get_rule(kCTFontTraitsAttribute) };
+            let symbolic_traits_attr: CFString =
+                unsafe { TCFType::wrap_under_get_rule(kCTFontSymbolicTrait) };
+            let traits = CFDictionary::from_CFType_pairs(&[(
+                symbolic_traits_attr.as_CFType(),
+                CFNumber::from(self.symbolic_traits as i32).as_CFType(),
+            )]);
             let mut attributes = Vec::new();
             attributes.push((traits_attr, traits.as_CFType()));
             if self.family.len() != 0 {
@@ -95,12 +104,12 @@ pub mod system_fonts {
                 CTFontDescriptorCopyAttribute(config.as_concrete_TypeRef(), kCTFontURLAttribute);
 
             if value.is_null() {
-                return None
+                return None;
             }
 
             let value: CFType = TCFType::wrap_under_get_rule(value);
             if !value.instance_of::<CFURL>() {
-                return None
+                return None;
             }
             url = TCFType::wrap_under_get_rule(mem::transmute(value.as_CFTypeRef()));
         }
@@ -110,7 +119,7 @@ pub mod system_fonts {
                 Err(_) => return None,
             }
         };
-        return None
+        return None;
     }
 
     /// Query the names of all fonts installed in the system

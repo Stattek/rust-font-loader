@@ -18,20 +18,26 @@
 
 /// Font loading utilities for installed system fonts
 pub mod system_fonts {
-    use servo_fontconfig::fontconfig::{FcConfig, FcInitLoadConfigAndFonts, FcNameParse};
-    use servo_fontconfig::fontconfig::{FcPattern, FcPatternCreate, FcPatternDestroy, FcFontMatch};
-    use servo_fontconfig::fontconfig::{FcFontList, FcObjectSetBuild, FcChar8, FcDefaultSubstitute};
-    use servo_fontconfig::fontconfig::{FcPatternGetString, FcPatternAddInteger, FcPatternGetInteger};
-    use servo_fontconfig::fontconfig::{FcResultMatch, FcMatchPattern, FcResultNoMatch, FcConfigSubstitute};
     use servo_fontconfig::fontconfig::FcPatternAddString;
+    use servo_fontconfig::fontconfig::{
+        FcChar8, FcDefaultSubstitute, FcFontList, FcObjectSetBuild,
+    };
+    use servo_fontconfig::fontconfig::{FcConfig, FcInitLoadConfigAndFonts, FcNameParse};
+    use servo_fontconfig::fontconfig::{
+        FcConfigSubstitute, FcMatchPattern, FcResultMatch, FcResultNoMatch,
+    };
+    use servo_fontconfig::fontconfig::{FcFontMatch, FcPattern, FcPatternCreate, FcPatternDestroy};
+    use servo_fontconfig::fontconfig::{
+        FcPatternAddInteger, FcPatternGetInteger, FcPatternGetString,
+    };
 
-    use libc::{c_int, c_char};
+    use libc::{c_char, c_int};
 
+    use std::ffi::{CStr, CString};
+    use std::fs::File;
+    use std::io::prelude::*;
     use std::ptr;
     use std::slice;
-    use std::ffi::{CStr, CString};
-    use std::io::prelude::*;
-    use std::fs::File;
 
     use std::sync::{Once, ONCE_INIT};
 
@@ -186,7 +192,9 @@ pub mod system_fonts {
             if !property.family.is_empty() {
                 add_string(pattern, FC_FAMILY, &property.family);
             }
-            property.spacing.map(|spacing| add_int(pattern, FC_SPACING, spacing));
+            property
+                .spacing
+                .map(|spacing| add_int(pattern, FC_SPACING, spacing));
             add_int(pattern, FC_WEIGHT, property.weight);
             add_int(pattern, FC_SLANT, property.slant);
 
